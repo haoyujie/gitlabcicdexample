@@ -1,0 +1,40 @@
+{
+   "title": "test creating PR via REST API",
+   "description": "Itâ€™s a kludge, but put the tuple from the database in the cache.",
+   "state": "OPEN",
+   "open": true,
+   "closed": false,
+   "fromRef": {
+      "id": "refs/heads/zli6_master",
+      "repository": {
+         "slug": "test-cicd",
+         "name": "test-cicd",
+         "project": {
+            "key": "CCM-PS"
+         }
+      }
+   },
+   "toRef": {
+      "id": "refs/heads/master",
+      "repository": {
+         "slug": "test-cicd",
+         "name": "test-cicd",
+         "project": {
+            "key": "CCM-PS"
+         }
+      }
+   },
+   "locked": false,
+   "reviewers": [
+      {
+         "user": {
+            "name": "zli6"
+         }
+      }
+   ],
+   "links": {
+      "self": [
+         null
+      ]
+   }
+}

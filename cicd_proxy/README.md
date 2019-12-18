@@ -1,0 +1,9 @@
+proxy from ccm repos to gitlab-cicd
+===================================
+1. sample building:
+go build
+===================================
+2. testing script like this
+-----------------------------------
+curl -s -XPOST -d'{"repository":{"slug":"test-cicd","id":3968,"name":"test-cicd","scmId":"git","state":"AVAILABLE","statusMessage":"Available","forkable":true,"project":{"key":"CCM-PS","id":2262,"name":"CCM-PS","description":"This project is used to host CCM/FBM git repositoies including CCM layers and CCM test layers etc.","public":false,"type":"NORMAL"},"public":true},"refChanges":[{"refId":"refs/heads/hmi_master","fromHash":"2908a1d5f13fedcb59e66725103382ffe15ca26e","toHash":"3608b50f891bf648eafe92af663b64669e571c97","type":"UPDATE"}],"changesets":{"size":1,"limit":100,"isLastPage":true,"values":[{"fromCommit":{"id":"2908a1d5f13fedcb59e66725103382ffe15ca26e","displayId":"2908a1d5f13"},"toCommit":{"id":"3608b50f891bf648eafe92af663b64669e571c97","displayId":"3608b50f891","author":{"name":"hmi","emailAddress":"haitao.mi@windriver.com"},"authorTimestamp":1575880958000,"message":"8888","parents":[{"id":"2908a1d5f13fedcb59e66725103382ffe15ca26e","displayId":"2908a1d5f13"}]},"changes":{"size":1,"limit":100,"isLastPage":true,"values":[{"contentId":"25583d471c89931ffd60e9c79a50cac1907218cf","fromContentId":"10390b3dfd46bd0997bc40cf128d754f1290d2ef","path":{"components":["README.md"],"parent":"","name":"README.md","extension":"md","toString":"README.md"},"executable":false,"percentUnchanged":-1,"type":"MODIFY","nodeType":"FILE","srcExecutable":false,"links":{"self":[{"href":"http://stash.wrs.com/projects/CCM-PS/repos/test-cicd/commits/3608b50f891bf648eafe92af663b64669e571c97#README.md"}]},"properties":{"gitChangeType":"MODIFY"}}],"start":0},"links":{"self":[{"href":"http://stash.wrs.com/projects/CCM-PS/repos/test-cicd/commits/3608b50f891bf648eafe92af663b64669e571c97#README.md"}]}}],"start":0}}' http://pek-lpd-ccm1:8090/cicdwebhook
+

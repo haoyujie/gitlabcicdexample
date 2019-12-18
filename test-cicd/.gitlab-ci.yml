@@ -1,0 +1,46 @@
+variables:
+  CI_PROJECT_DIR: /buildarea2/cicd
+
+stages:
+    - fetch
+    - build
+    - test
+fetch:
+    stage: fetch
+    script:
+      - pwd
+      - python3 helloworld.py
+      - echo "fetch code"
+build:arm32:
+    stage: build
+    script:
+      - pwd
+      - ls -la ${CI_PROJECT_DIR}
+      - python3 helloworld.py
+      - echo "build arm 32 succeed."
+      #- docker exec -t acpl_centos73 bash /buildarea2/AutoTestFmk/a01_do_build.sh sbg18 debug
+build:arm64:
+    stage: build
+    script:
+      - pwd
+      - ls -la ${CI_PROJECT_DIR}
+      - python3 helloworld.py 
+      - echo "build arm 64 succeed"
+test:arm32:
+    stage: test
+    script:
+      - pwd
+      - ls -la ${CI_PROJECT_DIR}
+      - python3 helloworld.py
+      - echo "testing arm 32 ok."
+    dependencies:
+    - build:arm32
+test:arm64:
+    stage: test
+    script:
+      - pwd
+      - ls -la ${CI_PROJECT_DIR}
+      - python3 helloworld.py
+      - echo "testing arm 64 ok."
+    dependencies:
+    - build:arm64

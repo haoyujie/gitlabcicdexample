@@ -1,0 +1,119 @@
+variables:
+  CI_PROJECT_DIR: /buildarea2/cicd
+  cicd_project_name: cis-sbg8-cicdtest
+  projectname: sbg
+  script_path: /buildarea1/LavaJob/cicd/
+  workspace_path: /buildarea2/workspace_cicd
+  tmp_pull_info: /buildarea1/cicd_trans_app/tmp_pull_info
+  proxy_script_path: /buildarea2/yhao/work/cicd_trans_app/wrll_ccm_test_cicd_proxy
+  arch: x86
+before_script:
+    - export container_id="${projectname}_${CI_PIPELINE_ID}_${arch}"
+    #- export base_path="${workspace_path}/${projectname}_${CI_COMMIT_SHORT_SHA}_${arch}_$(date '+%Y%m%d%H%M%S')"
+    - export base_path="${workspace_path}/${projectname}_${CI_COMMIT_SHORT_SHA}_${arch}_${CI_PIPELINE_ID}"
+stages:
+    - Prepare
+    - Fetch
+    - Build
+    - Smoke_Test
+    - Review_Request
+    - merge
+    - Intergation_Test
+    - Delivery
+
+Prepare:
+    stage: Prepare
+    variables:
+      #projectname: sbg
+      #CI_DEBUG_TRACE: "true"
+    script:
+      - pwd
+      - export gitfolder=$(pwd)
+      - whoami
+      - echo ${CI_COMMIT_SHORT_SHA}
+      - echo ${script_path}
+      - echo ${workspace_path}
+      - if [ -d $base_path ]; then rm -rf "$base_path" ; fi
+      - mkdir -p ${base_path}
+      - echo ${base_path}
+      - chmod 777 ${base_path}
+      # hao - cp -r ${gitfolder} ${base_path}
+      # hao - $script_path/a_init_base_path.sh -d $base_path -P ${projectname} -S wrl8-25 -m ${arch}
+      # hao - echo "========fetch code finish========="
+      # hao - echo "--2 ready to run docker container id=$container_id"
+      # hao - echo $gitfolder
+      # hao - $script_path/b_init_build_env.sh $base_path $container_id
+      - echo "========rundocker finish========="
+
+Fetch:
+    stage: Fetch
+    variables:
+      arch: x86
+    script:
+      - echo "--3 ready to download ccm repos"
+      # hao - $script_path/c_git_prj_repos.sh $base_path
+      - echo "========$CI_JOB_NAME finish========="   
+    dependencies:
+      - Prepare
+Build:
+    stage: Build
+    script:
+      - pwd
+      - echo "--4 ready to make rootfs"
+      #- $script_path/d_make_test_build.sh $base_path $container_id
+      - echo "========$CI_JOB_NAME finish========="
+      # hao - $script_path/clean_docker_container.sh $container_id
+      #- docker exec -t acpl_centos73 bash /buildarea2/AutoTestFmk/a01_do_build.sh sbg18 debug
+    dependencies:
+      - Fetch
+Smoke_Test:
+    stage: Smoke_Test
+    script:
+      - pwd
+      #- python3 helloworld.py
+      # hao - echo "========$CI_JOB_NAME finish========="
+    dependencies:
+    - Build
+Review_Request:
+    stage: Review_Request
+    script:
+      - whoami
+      - echo ">>> start test review request"
+      - pullreqmsg=`echo "$CI_COMMIT_MESSAGE" | sed '1d'`
+      - echo "$pullreqmsg"
+      - echo $pullreqmsg > $tmp_pull_info/${CI_COMMIT_SHORT_SHA}.json
+      - $proxy_script_path/pullreq/pullreqbyjson.sh cis-sbg8-cicdtest ${tmp_pull_info}/${CI_COMMIT_SHORT_SHA}.json
+      #- $proxy_script_path/pullreq/sendpullreq.sh $pullreqmsg $cis-sbg8-cicdtest
+      
+      #- export val_h="Content\-Type\: application\/json"
+      #- val="curl -u 'yhao:Rfv.1234' -H ''  "
+      #- eval "$val"
+      - echo "========$CI_JOB_NAME finish========="   
+    dependencies:
+    - Smoke_Test
+
+
+Merge:
+    stage: merge
+    script:
+      - $proxy_script_path/merge/check_merge.sh ${cicd_project_name} ${CI_COMMIT_REF_NAME}
+    dependencies:
+    - Review_Request
+Intergation_Test:
+    stage: Intergation_Test
+    script:
+      
+      - echo "========$CI_JOB_NAME finish========="   
+    dependencies:
+    - Merge
+
+Delivery:
+    stage: Delivery
+    script:
+      
+      - echo "========$CI_JOB_NAME finish========="   
+    dependencies:
+    - Intergation_Test
+    
+
+    
